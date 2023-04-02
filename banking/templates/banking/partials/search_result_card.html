@@ -1,0 +1,21 @@
+{% load static %}
+
+<div class="card h-100">
+    <div class="card-header text-center">
+        <img src="{{recipient.profile.profile_pic.url}}" class="avatar avatar-lg" />
+    </div>
+    <div class="card-body m-0 text-center">
+        <h3 class="h4 text-truncate m-0">{{recipient.first_name}} {{recipient.last_name}}</h3>
+        <p class="text-muted text-truncate m-0">{{recipient.email}}</p>
+        <small class="text-muted">@{{recipient.username}}</small>
+    </div>
+    <div class="card-footer mt-auto">
+        <button class="btn btn-primary w-100"
+        hx-get="{% url 'send-detail-form' %}?recipient={{recipient.id}}"
+        hx-trigger="click"
+        hx-target="#dialog">
+            <i class="fa-regular fa-paper-plane mr-2"></i>
+            Send Money
+        </button>
+    </div>
+</div>
