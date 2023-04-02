@@ -7,7 +7,7 @@ from crispy_forms.templatetags.crispy_forms_filters import as_crispy_field
 from django.core.exceptions import ValidationError
 from .utils.search import get_user_with_id
 from django.urls import reverse_lazy
-from .utils.exceptions.TransactionException import TransferException
+from wallet.utils.exceptions.TransactionException import TransferException
 
 
 @login_required(login_url='login')

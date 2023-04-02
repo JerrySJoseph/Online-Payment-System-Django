@@ -11,7 +11,7 @@ from iam.api.register import check_email_exists, check_username_exists
 from .utils.search import search_with_identifier
 from .utils.transfers import balance_check
 from .utils.wallet import get_wallet_profile_by_id
-from .utils.exceptions.TransactionException import TransferException
+from wallet.utils.exceptions.TransactionException import TransferException
 
 
 
