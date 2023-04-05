@@ -76,3 +76,14 @@ def withdraw_transfer_request(rid:int):
     request=get_transfer_request_by_id(rid)
     request.delete()
     return True
+
+def approve_transfer_request(rid:int):
+    request=get_transfer_request_by_id(rid)
+    transfer_money_by_id(sender_id=request.recipient.id,recipient_id=request.sender.id,amount=request.amount,currency=request.currency)
+    request.delete()
+    return True
+
+def deny_transfer_request(rid:int):
+    request=get_transfer_request_by_id(rid)
+    request.delete()
+    return True

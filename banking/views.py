@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
-from .forms import RequestForm, SearchForm, SendDetailForm,RequestDetailForm
+from .forms import RequestForm, SearchForm, SendDetailForm, RequestDetailForm
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
-from .utils.transfers import create_transfer_request,transfer_money_by_id,get_transfer_requests_by_id,get_transfer_request_by_id,withdraw_transfer_request
+from .utils.transfers import create_transfer_request, transfer_money_by_id, get_transfer_requests_by_id, get_transfer_request_by_id, withdraw_transfer_request, approve_transfer_request as atr, deny_transfer_request as dtr
 from crispy_forms.templatetags.crispy_forms_filters import as_crispy_field
 from django.core.exceptions import ValidationError
 from .utils.search import get_user_with_id
@@ -10,51 +10,129 @@ from django.urls import reverse_lazy
 from wallet.utils.exceptions.TransactionException import TransferException
 import json
 
+
 @login_required(login_url='login')
 def transfer_request(request):
-    
-    if request.method=='GET':
-        return render(request,'banking/layout/transfer-request.html')
+
+    if request.method == 'GET':
+        return render(request, 'banking/layout/transfer-request.html')
     raise Http404()
 
+
 def get_transfer_request_list(request):
-    if request.method=='GET':
-        group=request.GET.get('group') if request.GET.get('group') is not None else 'all'
-        results=[]
-        
-        results=get_transfer_requests_by_id(request.user.id,group)
-        context={
-            'transfer_requests':results,
-            'group':group,
-            'count':len(results)           
+    if request.method == 'GET':
+        group = request.GET.get('group') if request.GET.get(
+            'group') is not None else 'all'
+        results = []
+
+        results = get_transfer_requests_by_id(request.user.id, group)
+        context = {
+            'transfer_requests': results,
+            'group': group,
+            'count': len(results)
         }
         print(len(results))
-        return render(request,'banking/partials/transfer_request_list.html',context)
+        return render(request, 'banking/partials/transfer_request_list.html', context)
     return HttpResponse('No content')
+
 
 def withdraw_confirmation_form(request):
-    if request.method=='GET':
-        context={
-            'rid':request.GET.get('rid')
+    if request.method == 'GET':
+        context = {
+            'rid': request.GET.get('rid')
         }
-        return render(request,'banking/partials/transfer_request_withdraw.html',context)
+        return render(request, 'banking/partials/transfer_request_withdraw.html', context)
     return HttpResponse('No content')
 
+
+def approve_tr_confirmation_form(request):
+    if request.method == 'GET':
+        context = {
+            'tr': get_transfer_request_by_id(request.GET.get('rid'))
+        }
+        return render(request, 'banking/partials/transfer_request_approve.html', context)
+    return HttpResponse('No content')
+
+
+def deny_tr_confirmation_form(request):
+    if request.method == 'GET':
+        context = {
+            'tr': get_transfer_request_by_id(request.GET.get('rid'))
+        }
+        return render(request, 'banking/partials/transfer_request_deny.html', context)
+    return HttpResponse('No content')
+
+
 def withdraw_request(request):
-    if request.method=='GET':
-        rid=request.GET.get('rid')
-        tr_rq=get_transfer_request_by_id(rid)
+    if request.method == 'GET':
+        rid = request.GET.get('rid')
+        tr_rq = get_transfer_request_by_id(rid)
         withdraw_transfer_request(rid)
-        return HttpResponse(status=204,headers={
+        return HttpResponse(status=204, headers={
             'HX-Trigger': json.dumps({
-            'transfer_request_withdraw':{
-                'success':True,
-                'title':'Request Withdrawn',
-                'message':f'Transfer request of {tr_rq.currency} {tr_rq.amount} was withdrawn successfully' 
-            }
+                'toast': {
+                    'success': True,
+                    'title': 'Request Withdrawn',
+                    'message': f'Transfer request of {tr_rq.currency} {tr_rq.amount} was withdrawn successfully'
+                }
             })
         })
     return HttpResponse('No content')
+
+
+def approve_transfer_request(request):
+    if request.method == 'GET':
+        try:
+
+            rid = request.GET.get('rid')
+            tr_rq = get_transfer_request_by_id(rid)
+            atr(rid)
+            return HttpResponse(status=204, headers={
+                'HX-Trigger': json.dumps({
+                    'toast': {
+                        'success': True,
+                        'title': 'Money Transferred',
+                        'message': f'You have sent {tr_rq.recipient.first_name} an amount of {tr_rq.currency} {tr_rq.amount} successfully'
+                    }
+                })
+            })
+        except TransferException as te:
+            context = {
+                'message': te.message
+            }
+            return render(request, 'banking/partials/send_failed.html', context)
+        except Exception as e:
+            return HttpResponse(f'Transaction Failed:{str(e)}')
+
+    return HttpResponse('No content')
+
+
+def deny_transfer_request(request):
+    if request.method == 'GET':
+        try:
+
+            rid = request.GET.get('rid')
+            tr_rq = get_transfer_request_by_id(rid)
+            dtr(rid)
+            return HttpResponse(status=204, headers={
+                'HX-Trigger': json.dumps({
+                    'toast': {
+                        'success': True,
+                        'title': 'Transfer Request Declined',
+                        'message': f'You have declined the transfer request from {tr_rq.recipient.first_name} for an amount of {tr_rq.currency} {tr_rq.amount} successfully'
+                    }
+                })
+            })
+        except TransferException as te:
+            context = {
+                'message': te.message
+            }
+            return render(request, 'banking/partials/send_failed.html', context)
+        except Exception as e:
+            return HttpResponse(f'Transaction Failed:{str(e)}')
+
+    return HttpResponse('No content')
+
 
 @login_required(login_url='login')
 def send(request):
@@ -84,9 +162,9 @@ def send_detail_form(request):
             context = {
                 'form': form,
                 'recipient': recipient,
-                'sender':request.user,
-                'amount':request.POST.get('amount'),
-                'currency':request.POST.get('currency')
+                'sender': request.user,
+                'amount': request.POST.get('amount'),
+                'currency': request.POST.get('currency')
             }
             return render(request, 'banking/partials/send_confirm_form.html', context)
         context = {
@@ -94,31 +172,31 @@ def send_detail_form(request):
             'recipient': recipient
         }
         return render(request, 'banking/partials/send_detail_form.html', context)
-    
+
     elif request.method == 'POST' and 'confirm' in request.POST:
-        
+
         try:
-            sender_id=request.POST.get('sender')
-            recipient_id=request.POST.get('recipient')
-            amount=request.POST.get('amount')
-            currency=request.POST.get('currency')
-            transfer_money_by_id(sender_id,recipient_id,amount,currency)
+            sender_id = request.POST.get('sender')
+            recipient_id = request.POST.get('recipient')
+            amount = request.POST.get('amount')
+            currency = request.POST.get('currency')
+            transfer_money_by_id(sender_id, recipient_id, amount, currency)
             context = {
-                'form': SendDetailForm(request.user.id,request.POST),
+                'form': SendDetailForm(request.user.id, request.POST),
                 'recipient': get_user_with_id(recipient_id),
-                'sender':request.user,
-                'amount':amount,
-                'currency':currency
+                'sender': request.user,
+                'amount': amount,
+                'currency': currency
             }
-            return render(request,'banking/partials/send_success.html',context)
+            return render(request, 'banking/partials/send_success.html', context)
         except TransferException as te:
-            context={
-                'message':te.message
+            context = {
+                'message': te.message
             }
-            return render(request,'banking/partials/send_failed.html',context)
+            return render(request, 'banking/partials/send_failed.html', context)
         except Exception as e:
             return HttpResponse(f'Transaction Failed:{str(e)}')
-    
+
     elif 'recipient' not in request.GET:
         raise Http404()
     recipient = get_user_with_id(request.GET.get('recipient'))
@@ -128,14 +206,16 @@ def send_detail_form(request):
     }
     return render(request, 'banking/partials/send_detail_form.html', context)
 
+
 @login_required(login_url='login')
 def detail_form(request):
     if 'type' in request.GET:
-        if request.GET.get('type')=='request':
+        if request.GET.get('type') == 'request':
             return request_detail_form(request)
-        if request.GET.get('type')=='send':
+        if request.GET.get('type') == 'send':
             return send_detail_form(request)
     raise Http404()
+
 
 @login_required(login_url='login')
 def request(request):
@@ -165,9 +245,9 @@ def request_detail_form(request):
             context = {
                 'form': form,
                 'recipient': recipient,
-                'sender':request.user,
-                'amount':request.POST.get('amount'),
-                'currency':request.POST.get('currency')
+                'sender': request.user,
+                'amount': request.POST.get('amount'),
+                'currency': request.POST.get('currency')
             }
             return render(request, 'banking/partials/request_confirm_form.html', context)
         context = {
@@ -175,31 +255,31 @@ def request_detail_form(request):
             'recipient': recipient
         }
         return render(request, 'banking/partials/request_detail_form.html', context)
-    
+
     elif request.method == 'POST' and 'confirm' in request.POST:
-        
+
         try:
-            sender_id=request.POST.get('sender')
-            recipient_id=request.POST.get('recipient')
-            amount=request.POST.get('amount')
-            currency=request.POST.get('currency')
-            create_transfer_request(sender_id,recipient_id,amount,currency)
+            sender_id = request.POST.get('sender')
+            recipient_id = request.POST.get('recipient')
+            amount = request.POST.get('amount')
+            currency = request.POST.get('currency')
+            create_transfer_request(sender_id, recipient_id, amount, currency)
             context = {
-                'form': RequestDetailForm(request.user.id,request.POST),
+                'form': RequestDetailForm(request.user.id, request.POST),
                 'recipient': get_user_with_id(recipient_id),
-                'sender':request.user,
-                'amount':amount,
-                'currency':currency
+                'sender': request.user,
+                'amount': amount,
+                'currency': currency
             }
-            return render(request,'banking/partials/request_success.html',context)
+            return render(request, 'banking/partials/request_success.html', context)
         except TransferException as te:
-            context={
-                'message':te.message
+            context = {
+                'message': te.message
             }
-            return render(request,'banking/partials/request_failed.html',context)
+            return render(request, 'banking/partials/request_failed.html', context)
         except Exception as e:
             return HttpResponse(f'Transaction Failed:{str(e)}')
-    
+
     elif 'recipient' not in request.GET:
         raise Http404()
     recipient = get_user_with_id(request.GET.get('recipient'))

@@ -17,8 +17,16 @@ htmxpatters = [
          views.get_transfer_request_list, name='transfer-request-list'),
     path('htmx/withdraw-transfer-request-form',
          views.withdraw_confirmation_form, name='withdraw-form'),
+    path('htmx/approve-transfer-request-form',
+         views.approve_tr_confirmation_form, name='transfer-request-approve-confirmation'),
+    path('htmx/deny-transfer-request-form',
+         views.deny_tr_confirmation_form, name='transfer-request-deny-confirmation'),
     path('htmx/withdraw-transfer-request',
-         views.withdraw_request, name='withdraw-request')
+         views.withdraw_request, name='withdraw-request'),
+    path('htmx/deny-transfer-request',
+         views.deny_transfer_request, name='deny-request'),
+    path('htmx/approve-transfer-request',
+         views.approve_transfer_request, name='approve-request')
 
 ]
 

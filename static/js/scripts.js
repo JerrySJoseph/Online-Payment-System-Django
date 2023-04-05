@@ -12,7 +12,7 @@
         }
     })
 
-    document.body.addEventListener('transfer_request_withdraw',function(e){
+    document.body.addEventListener('toast',function(e){
         if(e.detail.success){
             toastIcon.className='fa-solid fa-check text-success mr-2'
         }else{

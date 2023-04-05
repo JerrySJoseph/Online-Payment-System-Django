@@ -32,10 +32,10 @@ def add_money_to_wallet(wallet: Wallet, amount:decimal.Decimal, currency):
     wallet.save()
     return wallet.balance
 
-def balance_check(sender_id, amount, currency):
+def balance_check(sender_id, amount:decimal.Decimal, currency):
     sender_wallet = Wallet.objects.get(user_id=sender_id)
-    sender_balance = sender_wallet.balance * conversion[sender_wallet.currency][currency]
-    required_balance = amount*conversion[currency][sender_wallet.currency]
+    sender_balance = sender_wallet.balance * decimal.Decimal(conversion[sender_wallet.currency][currency])
+    required_balance = amount*decimal.Decimal(conversion[currency][sender_wallet.currency])
 
     if amount > sender_balance:
         raise TransferException(
