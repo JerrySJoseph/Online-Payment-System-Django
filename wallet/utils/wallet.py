@@ -1,6 +1,6 @@
 from ..models import Wallet
 from .exceptions.TransactionException import TransferException
-
+import decimal
 conversion = {
     'USD': {
         'GBP': 0.82,
@@ -19,16 +19,16 @@ conversion = {
     }
 }
 
-def deduct_money_from_wallet(wallet: Wallet, amount, currency):
-    amount_in_base_currency = amount*conversion[currency][wallet.currency]
-    wallet.balance -= amount_in_base_currency
+def deduct_money_from_wallet(wallet: Wallet, amount:decimal.Decimal, currency):
+    amount_in_base_currency = amount*decimal.Decimal(conversion[currency][wallet.currency])
+    wallet.balance -= decimal.Decimal(amount_in_base_currency)
     wallet.save()
     return wallet.balance
 
 
-def add_money_to_wallet(wallet: Wallet, amount, currency):
-    amount_in_base_currency = amount*conversion[currency][wallet.currency]
-    wallet.balance += amount_in_base_currency
+def add_money_to_wallet(wallet: Wallet, amount:decimal.Decimal, currency):
+    amount_in_base_currency = amount*decimal.Decimal(conversion[currency][wallet.currency])
+    wallet.balance += decimal.Decimal(amount_in_base_currency)
     wallet.save()
     return wallet.balance
 

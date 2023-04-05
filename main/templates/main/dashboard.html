@@ -27,7 +27,7 @@
     </div>
     <div class="col-lg-3 mt-4">
         <div class="card display-card">
-            <a class="center nav-link text-reset text-decoration-none" href="{% url 'send-money'%}">
+            <a class="center nav-link text-reset text-decoration-none" href="{% url 'request-money'%}">
                 <div class="d-flex flex-column justify-content-center align-items-center">
                     <img src="{% static 'img/request-money.png' %}" class="display-card-img"/>
                     <div class="h4">Request Money</div>
@@ -37,10 +37,20 @@
     </div>
     <div class="col-lg-3 mt-4">
         <div class="card display-card">
-            <a class="center nav-link text-reset text-decoration-none" href="{% url 'send-money'%}">
+            <a class="center nav-link text-reset text-decoration-none" href="{% url 'transaction'%}">
                 <div class="d-flex flex-column justify-content-center align-items-center">
                     <img src="{% static 'img/transaction.png' %}" class="display-card-img"/>
                     <div class="h4">Transactions</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 mt-4">
+        <div class="card display-card">
+            <a class="center nav-link text-reset text-decoration-none" href="{% url 'transfer-request' %}">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <img src="{% static 'img/transfer-request.png' %}" class="display-card-img"/>
+                    <div class="h4 mt-2">Transfer Requests</div>
                 </div>
             </a>
         </div>

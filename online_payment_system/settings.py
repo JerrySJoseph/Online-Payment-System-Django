@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'notification.apps.NotificationConfig',
     'banking.apps.BankingConfig',
     'crispy_forms', 
-    'crispy_bootstrap4'
+    'crispy_bootstrap4',
+    'django_filters'
 ]
 
 MIDDLEWARE = [

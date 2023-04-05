@@ -5,11 +5,14 @@ from transaction.models import TransactionType, TransactionStatus
 import uuid
 
 
+def get_transactions_by_id_qs(user_id:int)->list:
+    return list(get_transactions_by_id(user_id))
+
 def get_transactions_by_id(user_id:int)->list:
     transactions=Transaction.objects.filter(
         Q(source__exact=user_id)
     )
-    return list(transactions.all())
+    return transactions.all()
 
 
 
