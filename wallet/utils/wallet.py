@@ -20,6 +20,7 @@ conversion = {
 }
 
 def deduct_money_from_wallet(wallet: Wallet, amount:decimal.Decimal, currency):
+    currency= currency or wallet.currency
     amount_in_base_currency = amount*decimal.Decimal(conversion[currency][wallet.currency])
     wallet.balance -= decimal.Decimal(amount_in_base_currency)
     wallet.save()
@@ -27,6 +28,7 @@ def deduct_money_from_wallet(wallet: Wallet, amount:decimal.Decimal, currency):
 
 
 def add_money_to_wallet(wallet: Wallet, amount:decimal.Decimal, currency):
+    currency= currency or wallet.currency
     amount_in_base_currency = amount*decimal.Decimal(conversion[currency][wallet.currency])
     wallet.balance += decimal.Decimal(amount_in_base_currency)
     wallet.save()
@@ -45,3 +47,4 @@ def balance_check(sender_id, amount:decimal.Decimal, currency):
         'currency': sender_wallet.currency,
         'success': True
     }
+

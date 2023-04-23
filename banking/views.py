@@ -269,3 +269,7 @@ def request_detail_form(request):
         'recipient': recipient
     }
     return render(request, 'banking/partials/request_detail_form.html', context)
+
+
+def bank_accounts(request):
+    return render(request,'banking/layout/bank-accounts.html')

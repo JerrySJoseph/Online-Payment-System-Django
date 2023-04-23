@@ -14,4 +14,4 @@ class Profile(models.Model):
     profile_pic=models.ImageField(upload_to='profile_images',blank=True,default='default.png')
     
     def __str__(self) -> str:
-          return self.user.username
+          return f'Profile [ {self.user.username} ]'

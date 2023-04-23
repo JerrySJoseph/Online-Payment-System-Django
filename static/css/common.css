@@ -96,3 +96,18 @@ body {
 .icon-button:hover .fa-regular{
     display: none;
 }
+
+.hoverable-fa{
+  cursor: pointer;
+}
+.hoverable-fa:hover{
+  transform: scale(1.1);
+}
+
+.hoverable{
+  cursor: pointer;
+}
+
+.hoverable:hover{
+  background-color: var(--bg-hover);
+}

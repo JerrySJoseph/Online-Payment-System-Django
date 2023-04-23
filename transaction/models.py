@@ -14,8 +14,7 @@ class TransactionType(models.TextChoices):
 # Create your models here.
 class Transaction(models.Model):
     tid=models.CharField(max_length=200)
-    type=models.CharField(max_length=10,choices=TransactionType.choices)
-    source=models.ForeignKey(User,on_delete=models.CASCADE,related_name='source',default=None)
+    #source=models.ForeignKey(User,on_delete=models.CASCADE,related_name='source',default=None)
     sender=models.ForeignKey(User,on_delete=models.CASCADE,related_name='sender')
     recipient=models.ForeignKey(User,on_delete=models.CASCADE,related_name='recipient')
     amount=models.DecimalField(decimal_places=2,max_digits=10)
@@ -23,3 +22,10 @@ class Transaction(models.Model):
     currency=models.CharField(max_length=5,choices=Currency.choices,default=Currency.USD)
     status=models.CharField(max_length=10,choices=TransactionStatus.choices,default=TransactionStatus.PENDING)
     datetime=models.DateTimeField(auto_now_add=True)
+
+    
+    def type(self,source_user:User):
+           if source_user.id==self.id:
+                return 'DEBIT'
+           return 'CREDIT'
+    

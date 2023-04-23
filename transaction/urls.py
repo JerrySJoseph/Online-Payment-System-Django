@@ -6,7 +6,8 @@ urlpatterns=[
 ]
 
 htmxpatterns=[
-    path('htmx/getlist',views.get_list,name='get-list')
+    path('htmx/get-transaction-list',views.get_list,name='get-transaction-list'),
+    path('htmx/get-transaction-detail',views.get_transaction_detail,name='get-transaction-detail')
 ]
 
 urlpatterns+=htmxpatterns

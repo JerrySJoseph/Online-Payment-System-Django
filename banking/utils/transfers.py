@@ -31,15 +31,16 @@ def _transfer_money_by_id(sender_id, recipient_id, amount, currency,notify:bool=
     recipient_balance=add_money_to_wallet(recipient_wallet, amount, currency)
 
     tid=_generate_transaction_id()
-    # create sender debit transaction
-    create_transaction(tid,sender,sender,recipient,TransactionType.DEBIT,TransactionStatus.SUCCESS,amount,currency,sender_balance)
     
-    # create recipient credit transaction
-    create_transaction(tid,recipient,sender,recipient,TransactionType.CREDIT,TransactionStatus.SUCCESS,amount,currency,recipient_balance)
+    # create sender debit transaction
+    create_transaction(tid,sender,recipient,TransactionStatus.SUCCESS,amount,currency,sender_balance)
+    
+    # # create recipient credit transaction
+    # create_transaction(tid,recipient,sender,recipient,TransactionType.CREDIT,TransactionStatus.SUCCESS,amount,currency,recipient_balance)
     
     if notify:
-        notify_user(sender_id,f'You have transferred {amount} {currency} to {recipient.first_name} {recipient.last_name}',type=NotificationType.TRANSACTION_SUCCESS)
-        notify_user(recipient_id,f'You have recieved {amount} {currency} from {sender.first_name} {sender.last_name}',type=NotificationType.MONEY_RECIEVED)
+        notify_user(sender_id,'Money Transferred',f'You have transferred {amount} {currency} to {recipient.first_name} {recipient.last_name}',type=NotificationType.TRANSACTION_SUCCESS)
+        notify_user(recipient_id,'Money Recieved',f'You have recieved {amount} {currency} from {sender.first_name} {sender.last_name}',type=NotificationType.MONEY_RECIEVED)
     return True
 
 def create_transfer_request(sender_id:int, recipient_id:int,amount,currency):
@@ -55,6 +56,8 @@ def create_transfer_request(sender_id:int, recipient_id:int,amount,currency):
         currency=currency,
     )
     tr_request.save()
+    notify_user(sender_id,'Transfer Request Sent',f'You have requested {recipient.first_name} an amount of {amount} {currency}.',type=NotificationType.MONEY_REQUEST)
+    notify_user(recipient_id,'Transfer Request Recieved',f'{recipient.first_name} has requested an amount of {amount} {currency}.',type=NotificationType.MONEY_REQUEST)
 
 def get_transfer_requests_by_id_qs(user_id:int)->list:
     return list(get_transfer_requests_by_id(user_id))
@@ -78,6 +81,7 @@ def get_transfer_request_by_id(rid:int):
 def withdraw_transfer_request(rid:int):
     request=get_transfer_request_by_id(rid)
     request.delete()
+    
     return True
 
 def approve_transfer_request(rid:int):

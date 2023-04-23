@@ -19,4 +19,7 @@ class Notification(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='notification_user')
     type=models.CharField(max_length=10,choices=NotificationType.choices,default=NotificationType.INFO)
     datetime=models.DateTimeField(auto_now_add=True)
-    seen=models.BooleanField(default=False)  
+    seen=models.BooleanField(default=False)
+    #data=models.TextField(default='None')
+    message=models.TextField(default="")
+    title=models.TextField(default="")  
