@@ -17,3 +17,6 @@ class TransferRequest(models.Model):
     currency=models.CharField(max_length=5,choices=Currency.choices,default=Currency.USD)
     status=models.CharField(max_length=10,choices=TransferRequestStatus.choices,default=TransferRequestStatus.PENDING)
     datetime=models.DateTimeField(auto_now_add=True)
+
+
+    

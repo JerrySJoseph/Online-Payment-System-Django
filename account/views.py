@@ -6,3 +6,8 @@ def profile(request):
 
 def edit(request):
     return render(request,'account/edit-profile.html')
+
+def nav_account_details(request):
+    return render(request,'account/partials/nav-account-details.html',{
+        'user':request.user
+    })

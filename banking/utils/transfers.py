@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from transaction.utils.transactions import create_transaction,_generate_transaction_id
 from ..models import TransferRequest
 from django.db.models import Q
-
+from notification.utils.notifications import notify_user,NotificationType
 import decimal
 
 
@@ -17,7 +17,7 @@ def transfer_money_by_id(sender_id, recipient_id, amount, currency):
     #raise TransferException('Some random transfer exception')
     return _transfer_money_by_id(sender_id,recipient_id,amount,currency)
 
-def _transfer_money_by_id(sender_id, recipient_id, amount, currency):
+def _transfer_money_by_id(sender_id, recipient_id, amount, currency,notify:bool=True):
 
     sender=User.objects.get(id=sender_id)
     recipient=User.objects.get(id=recipient_id)
@@ -37,6 +37,9 @@ def _transfer_money_by_id(sender_id, recipient_id, amount, currency):
     # create recipient credit transaction
     create_transaction(tid,recipient,sender,recipient,TransactionType.CREDIT,TransactionStatus.SUCCESS,amount,currency,recipient_balance)
     
+    if notify:
+        notify_user(sender_id,f'You have transferred {amount} {currency} to {recipient.first_name} {recipient.last_name}',type=NotificationType.TRANSACTION_SUCCESS)
+        notify_user(recipient_id,f'You have recieved {amount} {currency} from {sender.first_name} {sender.last_name}',type=NotificationType.MONEY_RECIEVED)
     return True
 
 def create_transfer_request(sender_id:int, recipient_id:int,amount,currency):

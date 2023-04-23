@@ -9,7 +9,7 @@ from .utils.search import get_user_with_id
 from django.urls import reverse_lazy
 from wallet.utils.exceptions.TransactionException import TransferException
 import json
-
+from utils.toast import ToastHttpResponse
 
 @login_required(login_url='login')
 def transfer_request(request):
@@ -68,15 +68,8 @@ def withdraw_request(request):
         rid = request.GET.get('rid')
         tr_rq = get_transfer_request_by_id(rid)
         withdraw_transfer_request(rid)
-        return HttpResponse(status=204, headers={
-            'HX-Trigger': json.dumps({
-                'toast': {
-                    'success': True,
-                    'title': 'Request Withdrawn',
-                    'message': f'Transfer request of {tr_rq.currency} {tr_rq.amount} was withdrawn successfully'
-                }
-            })
-        })
+        return ToastHttpResponse(True,'Request Withdrawn',f'Transfer request of {tr_rq.currency} {tr_rq.amount} was withdrawn successfully')
+        
     return HttpResponse('No content')
 
 
@@ -87,15 +80,7 @@ def approve_transfer_request(request):
             rid = request.GET.get('rid')
             tr_rq = get_transfer_request_by_id(rid)
             atr(rid)
-            return HttpResponse(status=204, headers={
-                'HX-Trigger': json.dumps({
-                    'toast': {
-                        'success': True,
-                        'title': 'Money Transferred',
-                        'message': f'You have sent {tr_rq.recipient.first_name} an amount of {tr_rq.currency} {tr_rq.amount} successfully'
-                    }
-                })
-            })
+            return ToastHttpResponse(True,'Money Transferred',f'You have sent {tr_rq.recipient.first_name} an amount of {tr_rq.currency} {tr_rq.amount} successfully')
         except TransferException as te:
             context = {
                 'message': te.message
@@ -114,22 +99,15 @@ def deny_transfer_request(request):
             rid = request.GET.get('rid')
             tr_rq = get_transfer_request_by_id(rid)
             dtr(rid)
-            return HttpResponse(status=204, headers={
-                'HX-Trigger': json.dumps({
-                    'toast': {
-                        'success': True,
-                        'title': 'Transfer Request Declined',
-                        'message': f'You have declined the transfer request from {tr_rq.recipient.first_name} for an amount of {tr_rq.currency} {tr_rq.amount} successfully'
-                    }
-                })
-            })
+            return ToastHttpResponse(True,'Transfer Request Declined',f'You have declined the transfer request from {tr_rq.recipient.first_name} for an amount of {tr_rq.currency} {tr_rq.amount} successfully')
+            
         except TransferException as te:
             context = {
                 'message': te.message
             }
             return render(request, 'banking/partials/send_failed.html', context)
         except Exception as e:
-            return HttpResponse(f'Transaction Failed:{str(e)}')
+            return ToastHttpResponse(False,'Error Occured',f'{str(e)}')
 
     return HttpResponse('No content')
 
@@ -180,15 +158,18 @@ def send_detail_form(request):
             recipient_id = request.POST.get('recipient')
             amount = request.POST.get('amount')
             currency = request.POST.get('currency')
+            recipient=get_user_with_id(recipient_id)
             transfer_money_by_id(sender_id, recipient_id, amount, currency)
-            context = {
-                'form': SendDetailForm(request.user.id, request.POST),
-                'recipient': get_user_with_id(recipient_id),
-                'sender': request.user,
-                'amount': amount,
-                'currency': currency
-            }
-            return render(request, 'banking/partials/send_success.html', context)
+            return HttpResponse(status=204, headers={
+                'HX-Trigger': json.dumps({
+                    'toast': {
+                        'success': True,
+                        'title': 'Money Transferred',
+                        'message': f'You have successfully transfered {amount} {currency} to {recipient.first_name}.'
+                    }
+                })
+            })
+            
         except TransferException as te:
             context = {
                 'message': te.message
