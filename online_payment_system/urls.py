@@ -12,7 +12,8 @@ urlpatterns = [
     path('notification/',include('notification.urls'),name='notification'),
     path('wallet/',include('wallet.urls'),name='wallet'),
     path('transaction/',include('transaction.urls'),name='transaction'),
-    path('admin/',admin.site.urls,name='admin'),
+    path('admin/',include('administrator.urls'),name='admin'),
+    path('admin-django/',admin.site.urls,name='admin-django'),
 ]
 
 

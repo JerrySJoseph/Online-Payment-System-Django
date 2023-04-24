@@ -15,6 +15,8 @@ def alert(request):
 
 @login_required(login_url='login')
 def index(request):
+    if request.user.is_superuser:
+        return redirect('admin')
     return render(request,'main/dashboard.html',{'title':'Dashboard'})
 
 

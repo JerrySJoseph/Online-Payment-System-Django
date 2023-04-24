@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse
 from django.http import Http404
-from .utils.transactions import get_transactions_by_id, get_transaction_by_id
+from .utils.transactions import get_transactions_by_id, get_transaction_by_id,get_all_transactions
 
 # Create your views here.
 
@@ -18,8 +18,14 @@ def get_list(request):
         sort = request.GET.get('sort')
         sortby = request.GET.get('sortby')
 
-        transactions = get_transactions_by_id(
-            request.user.id, limit=limit, sort=sort, sortby=sortby)
+        type=request.GET.get('type') or 'user'
+        transactions=[]
+
+        if type == 'all':
+            transactions=get_all_transactions()
+        else:
+            transactions = get_transactions_by_id(
+                request.user.id, limit=limit, sort=sort, sortby=sortby)
         
 
         if len(transactions) == 0:
@@ -36,6 +42,7 @@ def get_list(request):
                 tr.type='CREDIT'
         context = {
             'transactions': transactions,
+            'type':type
         }
         return render(request, 'transaction/partials/transaction-table.html', context)
     raise Http404()
@@ -45,6 +52,10 @@ def get_transaction_detail(request):
     if request.method == 'GET':
         tid = request.GET.get('tid')
         transaction = get_transaction_by_id(tid)
+        if transaction.sender.id==request.user.id:
+            transaction.type='DEBIT'
+        else:
+            transaction.type='CREDIT'
         context = {
             't': transaction,
         }

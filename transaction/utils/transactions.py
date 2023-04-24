@@ -53,3 +53,6 @@ def get_transaction_by_id(id:int):
 
 def _generate_transaction_id():
     return uuid.uuid4()
+
+def get_all_transactions():
+    return Transaction.objects.all()

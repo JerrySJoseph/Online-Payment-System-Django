@@ -3,7 +3,9 @@
         <tr>
             <th scope="col">Sender</th>
             <th scope="col">Recipient</th>
+            {% if type == 'user' %}
             <th scope="col">Type</th>
+            {% endif %}
             <th scope="col">Amount</th>
             <th scope="col">Time</th>
             <th scope="col">Balance</th>
@@ -15,6 +17,7 @@
         <tr class="{% if t.type == 'DEBIT' %}table-warning{% endif %}">
             <td>{{t.sender.first_name}}</td>
             <td>{{t.recipient.first_name}}</td>
+            {% if type == 'user' %}
             <td>{% if t.type == 'DEBIT' %}
                 <i class="fa-solid fa-caret-down text-danger mr-2"></i>
                 {% else %}
@@ -22,6 +25,7 @@
                 {% endif %}
                 {{t.type}}
             </td>
+            {% endif %}
             <td>{{t.amount}} {{t.currency}}</td>
             <td>{{t.datetime}}</td>
             <td>{{t.balance}} {{request.user.wallet.currency}} </td>
