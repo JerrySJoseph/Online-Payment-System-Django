@@ -6,12 +6,13 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
-
+from decimal import Decimal
 from iam.api.register import check_email_exists, check_username_exists
 from .utils.search import search_with_identifier
 from .utils.transfers import balance_check
 from .utils.wallet import get_wallet_profile_by_id
-from .utils.exceptions.TransactionException import TransferException
+from .utils.bank_account import add_bank_account,edit_bank_account,remove_bank_account
+from wallet.utils.exceptions.TransactionException import TransferException
 
 
 
@@ -60,14 +61,13 @@ class SearchForm(forms.Form):
         super(SearchForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_show_labels = False
-
     
 
 class SendDetailForm(forms.Form):
        
     amount=forms.DecimalField(decimal_places=2,widget=forms.NumberInput(
         attrs={'placeholder': 'Eg: $200.00',
-               
+               'type':'number'
                }), required=True,validators=[],label=None)
     currency=forms.ChoiceField(choices=Currency.choices, widget=forms.Select(
         attrs={'placeholder': 'Select Currency',
@@ -91,23 +91,77 @@ class SendDetailForm(forms.Form):
         curr=data.get('currency')
         print(f'sender: {self.sender}, amount: {amount}, curr: {curr}')
         if amount and curr and self.sender:
+            
             try:
-                balance_check(self.sender,int(amount),curr)
+                balance_check(self.sender,Decimal(amount),curr)
                 return data
             except TransferException as e:
+                print(f'transfer-exception {e}')
                 self.add_error('amount',ValidationError(str(e.message)))
             except Exception as e:
+                print(f'normal-exception {e}')
                 self.add_error('amount',ValidationError(str(e)))
         else:
             self.add_error('currency',ValidationError('Insufficient Parameters'))
+        
+        
+
+class RequestDetailForm(forms.Form):
+       
+    amount=forms.DecimalField(decimal_places=2,widget=forms.NumberInput(
+        attrs={'placeholder': 'Eg: $200.00',
+               'type':'number'
+               }), required=True,validators=[],label=None)
+    currency=forms.ChoiceField(choices=Currency.choices, widget=forms.Select(
+        attrs={'placeholder': 'Select Currency',
+               }
+    ))
+   
+    wallet=None
+   
+    def __init__(self,sender,*args, **kwargs):        
+        super(RequestDetailForm, self).__init__(*args, **kwargs)
+        self.sender=sender
+        wallet=get_wallet_profile_by_id(self.sender)
+        self.fields['currency'].initial=wallet.currency
+
+    
+      
+    # def clean(self):
+    #     data= super().clean()
+    #     amount=data.get('amount')
+    #     curr=data.get('currency')
+
+    #     if amount and curr and self.sender:
+    #         try:
+    #             balance_check(self.sender,int(amount),curr)
+    #             return data
+    #         except TransferException as e:
+    #             self.add_error('amount',ValidationError(str(e.message)))
+    #         except Exception as e:
+    #             self.add_error('amount',ValidationError(str(e)))
+    #     else:
+    #         self.add_error('currency',ValidationError('Insufficient Parameters'))
         
         
             
 
         
 
+                
+class BankAccountForm(forms.Form):
+    bank_name=forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'Name of your Bank'}), required=True,validators=[])
+    acc_no=forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'Account Number'}), required=True,validators=[])
     
-        
-        
-        
+    def save(self, user):
+        data=super().clean()
+        name=data['bank_name']
+        no=data['acc_no']
+        try:
+            return add_bank_account(name,no,user)
+        except Exception as e:
+            self.add_error('acc_no',ValidationError(str(e)))
+
     
