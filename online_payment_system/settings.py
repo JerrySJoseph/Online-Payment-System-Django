@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(1*t+=f%(0(ho9dlelv=_exaehf@e@ih#uz4g$d!tm-e3+r)tb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app','.jscloud.in']
 
 
 # Application definition
@@ -80,7 +80,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'online_payment_system.wsgi.application'
+
+WSGI_APPLICATION = 'online_payment_system.wsgi.app'
 
 
 # Database

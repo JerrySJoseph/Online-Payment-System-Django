@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "online_payment_system/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "online_payment_system/wsgi.py"
+      }
+    ]
+  }
