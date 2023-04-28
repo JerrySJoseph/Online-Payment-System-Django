@@ -3,18 +3,16 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div class="card m-4 shadow">
+<div class="card m-4 shadow col-md-6">
     <div class="row m-4">
-        <div class="col-md-6 center">
-            <img src="{% static 'img/hero-img.jpg' %}" alt="register" class="hero-image">
-        </div>
-        <div class="col-md-6">
+       
+        <div class="col-md-12">
             
             <form method="post" class="row p-4">
                 {% csrf_token %}
             
                 <div class="col-12 center mb-2">
-                    <img src="{% static 'img/paypal.png' %}" alt="register" class="img-sm">
+                    <img src="{% static 'img/panda.png' %}" alt="register" class="img-sm">
                 </div>
                 <div class="col-12 text-center h3">
                     Create a new account
@@ -62,6 +60,7 @@
                     {% endfor %}
 
                     {% endif %}
+                    <a href="{% url 'login' %}" class="btn btn-light w-100 mt-4">Already have an account?</a>
                 </div>
             </form>
         </div>

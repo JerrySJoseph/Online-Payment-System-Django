@@ -1,21 +1,23 @@
+from account.models import Currency
 from ..models import Wallet
 from .exceptions.TransactionException import TransferException
 import decimal
+
 conversion = {
     'USD': {
-        'GBP': 0.82,
-        'EUR': 0.93,
-        'USD': 1
+        'GBP': 2,
+        'EUR': 4,
+        'USD': 1.0
     },
     'GBP': {
-        'GBP': 1,
-        'EUR': 1.13,
-        'USD': 1.22
+        'GBP': 1.0,
+        'EUR': 5,
+        'USD': 0.5
     },
     'EUR': {
-        'GBP': 0.88,
-        'EUR': 1,
-        'USD': 1.08
+        'GBP': 0.5,
+        'EUR': 1.0,
+        'USD': 0.25
     }
 }
 
@@ -48,3 +50,14 @@ def balance_check(sender_id, amount:decimal.Decimal, currency):
         'success': True
     }
 
+def convert_amount(amount:decimal.Decimal,from_currency:Currency,to_currency:Currency):
+    return amount*decimal.Decimal(conversion[from_currency][to_currency])
+
+
+def change_currency(user_wallet:Wallet,currency:Currency):
+    user_wallet.balance=convert_amount(user_wallet.balance,user_wallet.currency,currency)
+    user_wallet.currency=currency
+    user_wallet.save()
+    return True
+
+165879.51
