@@ -1,1 +1,1 @@
-py manage.py collectstatic
+python manage.py collectstatic
