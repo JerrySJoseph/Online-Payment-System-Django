@@ -3,14 +3,13 @@
       {
         "src": "online_payment_system/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }
+        "config": { "maxLambdaSize": "15mb"}
       },
       {
         "src": "build.sh",
         "use": "@vercel/static-build",
         "config": {
-          "distDir": "staticfiles_build",
-          "runtime": "python3.11"
+          "distDir": "staticfiles_build"          
         }
       }
     ],
