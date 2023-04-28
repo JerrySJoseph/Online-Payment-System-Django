@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-(1*t+=f%(0(ho9dlelv=_exaehf@e@ih#uz4g$d!tm-e3+r)tb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app','.jscloud.in']
+ALLOWED_HOSTS = ['.vercel.app','.jscloud.in','127.0.0.1']
 
 
 # Application definition
@@ -91,7 +91,11 @@ WSGI_APPLICATION = 'online_payment_system.wsgi.app'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'online-payment-system-django-db',
+        'USER': 'admin',
+        'PASSWORD': 'jefinchetan123',
+        'HOST': 'online-payment-system-django-db.c3npoemgsr9h.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
     }
 }
 

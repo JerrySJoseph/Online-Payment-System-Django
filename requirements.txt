@@ -1,4 +1,3 @@
-pysqlite
 django
 crispy_bootstrap4
 Pillow

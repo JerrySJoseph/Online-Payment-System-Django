@@ -67,6 +67,7 @@ class RegisterForm(forms.Form):
         if not self.is_superuser and cleaned_data.get('tnc_check') == False:
             self.add_error(
                 'tnc_check', 'You need to accept Terms and Conditions first.')
+        
 
     def save(self, is_admin: bool = False):
         username = self.cleaned_data['username']
