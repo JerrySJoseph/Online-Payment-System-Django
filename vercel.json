@@ -4,23 +4,14 @@
         "src": "online_payment_system/wsgi.py",
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb"}
-      },
-      {
-        "src": "build.sh",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "staticfiles_build"          
-        }
       }
+    
     ],
     "routes": [
       {
         "src": "/(.*)",
         "dest": "online_payment_system/wsgi.py"
-      },
-      {
-        "src": "/static/(.*)",
-        "dest": "/static/$1"
       }
+     
     ]
   }
