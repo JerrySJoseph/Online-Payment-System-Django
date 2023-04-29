@@ -47,7 +47,7 @@ def login(request):
     message_store.used = True
     return render(request, 'iam/login.html', context)
 
-def create_default_superuser():
+
 
 
 
