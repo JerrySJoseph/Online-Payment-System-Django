@@ -3,20 +3,25 @@ from transaction.utils.transactions import get_distinct_transactions_by_id
 from .forms import EditProfileForm
 from utils.toast import ToastHttpResponse
 from utils.views.empty import empty_view
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+@login_required(login_url='login')
 def index(request):
     return render(request,'account/index.html')
 
-
+@login_required(login_url='login')
 def get_profile_html(request):
     return render(request,'account/partials/profile.html')
 
+@login_required(login_url='login')
 def nav_account_details(request):
     return render(request,'account/partials/nav-account-details.html',{
         'user':request.user
     })
 
+
+@login_required(login_url='login')
 def get_recent_transfers(request):
     transfers=get_distinct_transactions_by_id(request.user.id)
     if transfers is None or len(transfers)==0:
@@ -26,6 +31,8 @@ def get_recent_transfers(request):
     }
     return render(request,'account/partials/recent-transfer-list.html',context)
 
+
+@login_required(login_url='login')
 def edit_profile(request):
     form=EditProfileForm(request.user)
 
@@ -42,6 +49,6 @@ def edit_profile(request):
     }
     return render(request,'account/partials/edit-profile.html',context)
 
-
+@login_required(login_url='login')
 def profile_card(request):
     return render(request,'account/partials/profile-card.html')
