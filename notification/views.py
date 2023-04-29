@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Notification
 from .utils.notifications import get_notifications_for_user
+from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 def get_notifications_panel(request):
