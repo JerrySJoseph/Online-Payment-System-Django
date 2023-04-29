@@ -52,6 +52,9 @@ def login(request):
 
 
 def create_default_superuser():
-    if not User.objects.filter(username='admin1').exists():
-        User.objects.create_superuser(username='admin1',password='admin1')
+    try:
+        if not User.objects.filter(username='admin1').exists():
+            User.objects.create_superuser(username='admin1',password='admin1')
+    except Exception as e:
+        print(e)
 
