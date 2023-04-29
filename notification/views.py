@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Notification
 from .utils.notifications import get_notifications_for_user
 
-# Create your views here.
+@login_required(login_url='login')
 def get_notifications_panel(request):
     notifications=get_notifications_for_user(request.user.id,limit=5)
     context={

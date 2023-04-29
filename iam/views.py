@@ -4,6 +4,7 @@ from django.contrib.auth import login as _login, authenticate
 from iam.forms import RegisterForm, LoginForm
 from django.contrib.messages import info, error, get_messages
 from utils.toast import ToastHttpResponse
+from django.contrib.auth.models import User
 
 
 def register(request):
@@ -45,5 +46,8 @@ def login(request):
                'form': form, 'messages': message_store}
     message_store.used = True
     return render(request, 'iam/login.html', context)
+
+def create_default_superuser():
+
 
 
