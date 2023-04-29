@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-(1*t+=f%(0(ho9dlelv=_exaehf@e@ih#uz4g$d!tm-e3+r)tb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app','.jscloud.in']
+ALLOWED_HOSTS = ['.vercel.app','.jscloud.in','127.0.0.1']
 
 
 # Application definition
@@ -90,7 +91,11 @@ WSGI_APPLICATION = 'online_payment_system.wsgi.app'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -129,12 +134,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'https://d11b3pf7ulbs6a.cloudfront.net/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
+#STATIC_ROOT = 'https://d11b3pf7ulbs6a.cloudfront.net/'
+#os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

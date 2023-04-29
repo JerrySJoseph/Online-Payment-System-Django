@@ -7,9 +7,9 @@ urlpatterns=[
     
 ]
 
-htmxpatterns=[
+""" htmxpatterns=[
     path('htmx/iam/login-form',views.get_login_form,name='login-form'),
     path('htmx/iam/register-form',views.get_register_form,name='register-form')
 ]
 
-urlpatterns+=htmxpatterns
+urlpatterns+=htmxpatterns """

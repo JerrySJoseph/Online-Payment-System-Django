@@ -2,13 +2,16 @@
     "builds": [
       {
         "src": "online_payment_system/wsgi.py",
-        "use": "@vercel/python"
+        "use": "@vercel/python",
+        "config": { "maxLambdaSize": "15mb"}
       }
+    
     ],
     "routes": [
       {
         "src": "/(.*)",
         "dest": "online_payment_system/wsgi.py"
       }
+     
     ]
   }

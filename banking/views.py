@@ -19,6 +19,7 @@ def transfer_request(request):
     raise Http404()
 
 
+@login_required(login_url='login')
 def get_transfer_request_list(request):
     if request.method == 'GET':
         group = request.GET.get('group') if request.GET.get(
@@ -36,6 +37,7 @@ def get_transfer_request_list(request):
     return HttpResponse('No content')
 
 
+@login_required(login_url='login')
 def withdraw_confirmation_form(request):
     if request.method == 'GET':
         context = {
@@ -45,6 +47,7 @@ def withdraw_confirmation_form(request):
     return HttpResponse('No content')
 
 
+@login_required(login_url='login')
 def approve_tr_confirmation_form(request):
     if request.method == 'GET':
         context = {
@@ -54,6 +57,7 @@ def approve_tr_confirmation_form(request):
     return HttpResponse('No content')
 
 
+@login_required(login_url='login')
 def deny_tr_confirmation_form(request):
     if request.method == 'GET':
         context = {
@@ -63,6 +67,7 @@ def deny_tr_confirmation_form(request):
     return HttpResponse('No content')
 
 
+@login_required(login_url='login')
 def withdraw_request(request):
     if request.method == 'GET':
         rid = request.GET.get('rid')
@@ -72,7 +77,7 @@ def withdraw_request(request):
         
     return HttpResponse('No content')
 
-
+@login_required(login_url='login')
 def approve_transfer_request(request):
     if request.method == 'GET':
         try:
@@ -92,6 +97,7 @@ def approve_transfer_request(request):
     return HttpResponse('No content')
 
 
+@login_required(login_url='login')
 def deny_transfer_request(request):
     if request.method == 'GET':
         try:
@@ -271,5 +277,6 @@ def request_detail_form(request):
     return render(request, 'banking/partials/request_detail_form.html', context)
 
 
+@login_required(login_url='login')
 def bank_accounts(request):
     return render(request,'banking/layout/bank-accounts.html')
