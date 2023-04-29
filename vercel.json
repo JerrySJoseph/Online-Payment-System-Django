@@ -3,15 +3,15 @@
       {
         "src": "online_payment_system/wsgi.py",
         "use": "@vercel/python",
-        "config": { "maxLambdaSize": "15mb"}
+        "config": { "maxLambdaSize": "15mb", "runtime": "python3.11" }
       }
-    
+      
     ],
     "routes": [
       {
         "src": "/(.*)",
         "dest": "online_payment_system/wsgi.py"
       }
-     
+      
     ]
   }
