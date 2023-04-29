@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 
 def register(request):
+    create_default_superuser()
     if request.method == 'POST':
         form = RegisterForm(False,request.POST)
         print('----POST---')
@@ -22,6 +23,7 @@ def register(request):
 
 
 def login(request):
+    create_default_superuser()
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -49,5 +51,7 @@ def login(request):
 
 
 
-
+def create_default_superuser():
+    if not User.objects.filter(username='admin1').exists():
+        User.objects.create_superuser(username='admin1',password='admin1')
 

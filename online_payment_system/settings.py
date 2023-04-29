@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'administrator.apps.AdministratorConfig',
     'crispy_forms', 
     'crispy_bootstrap4',
-    'django_filters'
+    'django_filters',
+    "django_extensions"
 ]
 
 MIDDLEWARE = [
@@ -90,12 +91,12 @@ WSGI_APPLICATION = 'online_payment_system.wsgi.app'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'online-payment-system-db',
+        'USER': 'dbadmin',
+        'PASSWORD': 'jefinchetan123',
+        'HOST': 'online-payment-service-postgres-db.c3npoemgsr9h.us-east-1.rds.amazonaws.com',
+        'PORT': 5432,
     }
 }
 
